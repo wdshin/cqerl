@@ -76,7 +76,7 @@ handle_cast({remove_from_cluster, ClusterKey, NodePort}, State) ->
     io:format("~p ~p remove_from_cluster ~p ~n",[?MODULE,?LINE,L]),
     [ ets:delete_object(cqerl_clusters,A) || A <- L ],
 
-    {noreply, State}.
+    {noreply, State};
 
 handle_cast({add_to_cluster, ClusterKey, ClientKeys}, State) ->
 	Tables = ets:lookup(cqerl_clusters, ClusterKey),
