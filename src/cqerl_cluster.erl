@@ -69,7 +69,7 @@ init(_) ->
                              {keypos, #cluster_table.key}, bag]),
     {ok, undefined, 0}.
 
-handle_cast({removce_from_cluster, ClusterKey, NodePort}, State) ->
+handle_cast({remove_from_cluster, ClusterKey, NodePort}, State) ->
 
     Tables = ets:lookup(cqerl_clusters, ClusterKey),
     L = [ {A,B,{NodePort1,Opts}} || {A,B,{NodePort1,Opts}} <- Tables , NodePort1 = NodePort ],
