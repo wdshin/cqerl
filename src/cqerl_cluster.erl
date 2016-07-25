@@ -18,7 +18,8 @@
 
     add_nodes/1,
     add_nodes/2,
-    add_nodes/3
+    add_nodes/3,
+         remove_node/2
 ]).
 
 -define (PRIMARY_CLUSTER, '$primary_cluster').
@@ -48,6 +49,9 @@ add_nodes(Key, ClientKeys, Opts0) ->
 			{Inet, Opts0}
 	end, ClientKeys)).
 
+remove_node(Key,NodePort) ->
+    gen_server:cast(?MODULE, {removce_from_cluster, Key, NodePort}).
+
 get_any_client(Key) ->
 	case ets:lookup(cqerl_clusters, Key) of
 		[] -> {error, cluster_not_configured};
@@ -64,6 +68,15 @@ init(_) ->
     ets:new(cqerl_clusters, [named_table, {read_concurrency, true}, protected, 
                              {keypos, #cluster_table.key}, bag]),
     {ok, undefined, 0}.
+
+handle_cast({removce_from_cluster, ClusterKey, NodePort}, State) ->
+
+    Tables = ets:lookup(cqerl_clusters, ClusterKey),
+    L = [ A || {A,B,{NodePort1,Opts}} <- Tables , NodePort1 = NodePort ],
+    io:format("~p ~p remove_from_cluster ~p ~n",[?MODULE,?LINE,L]),
+    [ ets:delete_object(cqerl_clusters,A) || A <- L ],
+
+    {noreply, State}.
 
 handle_cast({add_to_cluster, ClusterKey, ClientKeys}, State) ->
 	Tables = ets:lookup(cqerl_clusters, ClusterKey),
