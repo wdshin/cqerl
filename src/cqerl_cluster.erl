@@ -50,7 +50,7 @@ add_nodes(Key, ClientKeys, Opts0) ->
 	end, ClientKeys)).
 
 remove_node(Key,NodePort) ->
-    gen_server:cast(?MODULE, {removce_from_cluster, Key, NodePort}).
+    gen_server:cast(?MODULE, {remove_from_cluster, Key, NodePort}).
 
 get_any_client(Key) ->
 	case ets:lookup(cqerl_clusters, Key) of
