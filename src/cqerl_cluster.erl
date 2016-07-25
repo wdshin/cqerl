@@ -72,7 +72,8 @@ init(_) ->
 handle_cast({remove_from_cluster, ClusterKey, NodePort}, State) ->
 
     Tables = ets:lookup(cqerl_clusters, ClusterKey),
-    L = [ {A,B,{NodePort1,Opts}} || {A,B,{NodePort1,Opts}} <- Tables , NodePort1 = NodePort ],
+    io:format("~p ~p remove_from_cluster ~p ~n",[?MODULE,?LINE,Tables]),
+    L = [ {A,B,{NodePort1,Opts}} || {A,B,{NodePort1,Opts}} <- Tables , NodePort1 == NodePort ],
     io:format("~p ~p remove_from_cluster ~p ~n",[?MODULE,?LINE,L]),
     [ ets:delete_object(cqerl_clusters,A) || A <- L ],
 
